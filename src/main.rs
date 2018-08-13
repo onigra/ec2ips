@@ -8,8 +8,8 @@ fn main() {
     let client = Ec2Client::new(Region::ApNortheast1);
 
     let filter = Filter {
-        name: Some(String::from("tag:Name")),
-        values: Some(vec![String::from("web")]),
+        name: Some("tag:Name".to_string()),
+        values: Some(vec!["web".to_string()]),
     };
 
     let describe_instance_request = DescribeInstancesRequest {
