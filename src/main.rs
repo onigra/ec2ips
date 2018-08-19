@@ -8,7 +8,7 @@ fn instance_list(reservations: Vec<Reservation>) -> Vec<Instance> {
     return reservations
         .into_iter()
         .flat_map(|reservation| reservation.instances)
-        .flat_map(|v| v)
+        .flat_map(|instance| instance)
         .collect::<Vec<Instance>>();
 }
 
