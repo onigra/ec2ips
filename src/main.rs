@@ -2,7 +2,7 @@ extern crate rusoto_core;
 extern crate rusoto_ec2;
 
 use rusoto_core::Region;
-use rusoto_ec2::{DescribeInstancesRequest, Ec2, Ec2Client, Filter};
+use rusoto_ec2::{DescribeInstancesRequest, Ec2, Ec2Client, Filter, Instance};
 
 fn main() {
     let client = Ec2Client::new(Region::ApNortheast1);
@@ -23,12 +23,15 @@ fn main() {
     match client.describe_instances(describe_instance_request).sync() {
         Ok(response) => match response.reservations {
             Some(reservations) => {
-                for reservation in reservations {
-                    for instances in reservation.instances {
-                        for instance in instances {
-                            println!("{}", instance.private_ip_address.unwrap());
-                        }
-                    }
+                let list = reservations
+                    .into_iter()
+                    .flat_map(|reservation| reservation.instances)
+                    .collect::<Vec<_>>();
+
+                let instances = list.into_iter().flat_map(|v| v).collect::<Vec<Instance>>();
+
+                for instance in instances {
+                    println!("{}", instance.private_ip_address.unwrap());
                 }
             }
             None => println!("No Instances"),
