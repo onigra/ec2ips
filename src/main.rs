@@ -21,9 +21,15 @@ fn main() {
     };
 
     match client.describe_instances(describe_instance_request).sync() {
-        Ok(output) => match output.reservations {
-            Some(instances) => {
-                println!("{:#?}", instances);
+        Ok(response) => match response.reservations {
+            Some(reservations) => {
+                for reservation in reservations {
+                    for instances in reservation.instances {
+                        for instance in instances {
+                            println!("{}", instance.private_ip_address.unwrap());
+                        }
+                    }
+                }
             }
             None => println!("No Instances"),
         },
