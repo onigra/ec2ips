@@ -5,12 +5,11 @@ use rusoto_core::Region;
 use rusoto_ec2::{DescribeInstancesRequest, Ec2, Ec2Client, Filter, Instance, Reservation, Tag};
 
 fn instance_list(reservations: Vec<Reservation>) -> Vec<Instance> {
-    let list = reservations
+    return reservations
         .into_iter()
         .flat_map(|reservation| reservation.instances)
-        .collect::<Vec<_>>();
-
-    return list.into_iter().flat_map(|v| v).collect::<Vec<Instance>>();
+        .flat_map(|v| v)
+        .collect::<Vec<Instance>>();
 }
 
 fn tag_value(tags: Option<Vec<Tag>>) -> Option<Tag> {
