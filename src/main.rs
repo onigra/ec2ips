@@ -12,13 +12,11 @@ fn instance_list(reservations: Vec<Reservation>) -> Vec<Instance> {
         .collect::<Vec<Instance>>();
 }
 
-fn tag_value(tags: Option<Vec<Tag>>) -> Option<Tag> {
-    let tag = tags
+fn tag_value(tag_list: Vec<Tag>) -> String {
+    return tag_list
         .into_iter()
-        .flat_map(|tags| tags)
-        .find(|tag| tag.key == Some("Name".to_string()));
-
-    return tag;
+        .find(|tag| tag.key == Some("Name".to_string()))
+        .map_or("".to_string(), |t| t.value.unwrap_or("".to_string()));
 }
 
 fn main() {
@@ -45,14 +43,14 @@ fn main() {
                 let ips = instances
                     .into_iter()
                     .map(|instance| {
-                        let tag = tag_value(instance.tags).and_then(|t| {
-                            if t.value.is_some() {
-                                t.value
-                            } else {
-                                None
-                            }
-                        });
-                        vec![instance.private_ip_address.unwrap(), tag.unwrap()]
+                        let tag = tag_value(
+                            instance
+                                .tags
+                                .into_iter()
+                                .flat_map(|tags| tags)
+                                .collect::<Vec<Tag>>(),
+                        );
+                        vec![instance.private_ip_address.unwrap(), tag]
                     })
                     .collect::<Vec<_>>();
 
