@@ -50,9 +50,9 @@ fn main() {
                                 .flat_map(|tags| tags)
                                 .collect::<Vec<Tag>>(),
                         );
-                        vec![instance.private_ip_address.unwrap(), tag]
+                        vec![instance.private_ip_address.unwrap_or("".to_string()), tag]
                     })
-                    .collect::<Vec<_>>();
+                    .collect::<Vec<Vec<String>>>();
 
                 for ip in ips {
                     println!("{}\t{}", ip[0], ip[1]);
